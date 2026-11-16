@@ -1,0 +1,8 @@
+# RETYPED FROM A SCREENSHOT (not a raw capture). Spacing is approximate; the parser is whitespace tolerant.
+ 2147    GOLD($).        4087.95 4087.95 0.00    0.00
+ 2149    INR     93.489  93.489  0.000   0.000
+ 2275    GOLD INDIAN-BIS 995 1KG (12th Nov)      140583  140883  142233  140687
+ 2206    GOLD INDIAN-BIS 995 500 GM (12th Nov)   140583  140883  142233  140687
+ 2157    GOLD IMPORTED 999 (11th Nov)    -       141483  142833  141287
+ 2278    GOLD RTGS 995 (WITH GST)        -       145109  146500  144908
+ 2365    GOLD RTGS IMPORTED 999 (WITH GST)       -       145727  147118  145526

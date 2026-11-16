@@ -1,0 +1,67 @@
+{% extends "base_admin.html" %}
+{% block body %}
+{% set mode = st.settings.mode %}
+<section><h2>Connection</h2>
+<dl>
+<dt>Mode</dt><dd>{{ mode|capitalize }}{% if mode == 'demo' %} – the TV shows a DEMO DATA label{% endif %}</dd>
+<dt>Board status</dt><dd>{{ snap.status|capitalize }}</dd>
+<dt>Last successful update</dt><dd>{{ st.last_update or 'Never' }}</dd>
+<dt>Last error</dt><dd>{{ st.last_error or 'None' }}</dd>
+<dt>Live provider</dt><dd>{{ st.live_status }}</dd>
+</dl></section>
+
+<section><h2>Mode, ticker and refresh</h2>
+<form method="post" action="{{ url_for('admin.settings') }}">
+<input type="hidden" name="csrf" value="{{ csrf_token() }}">
+<fieldset><legend>Mode</legend>
+<label class="inline"><input type="radio" name="mode" value="demo" {{ 'checked' if mode == 'demo' }}> Demo (sample data, labelled on the TV)</label>
+<label class="inline"><input type="radio" name="mode" value="manual" {{ 'checked' if mode == 'manual' }}> Manual (rates you type)</label>
+<label class="inline"><input type="radio" name="mode" value="live" {{ 'checked' if mode == 'live' }} {{ '' if 'live' in st.modes else 'disabled' }}> Live (provider feed){{ '' if 'live' in st.modes else ' – not available yet' }}</label>
+<p class="hint">Switching mode clears the stored rates, so demo numbers can never appear as manual rates.</p></fieldset>
+<label>Refresh interval in seconds (3–60) <input type="number" name="refresh_seconds" min="3" max="60" value="{{ st.settings.refresh_seconds }}"></label>
+<label>Notice at the top of the TV (optional) <input name="notice" maxlength="120" value="{{ st.settings.notice }}"></label>
+<label>Scrolling ticker text <textarea name="ticker_text" rows="3" maxlength="300">{{ st.settings.ticker_text }}</textarea></label>
+<button>Save settings</button>
+</form></section>
+
+<section><h2>Rate categories on the TV</h2>
+<form method="post" action="{{ url_for('admin.categories') }}">
+<input type="hidden" name="csrf" value="{{ csrf_token() }}">
+{% for c in st.categories %}<label class="inline"><input type="checkbox" name="enabled" value="{{ c.key }}" {{ 'checked' if c.enabled }}> {{ c.en }} / {{ c.mr }}</label>{% endfor %}
+<button>Save categories</button>
+</form></section>
+
+<section><h2>Pricing: purity and margin</h2>
+<p class="hint">Direct rate = source rate + margin. Calculated rate = (24K rate including its margin) × purity % + its own margin. Margin is in ₹ and can be negative.</p>
+<form method="post" action="{{ url_for('admin.pricing') }}">
+<input type="hidden" name="csrf" value="{{ csrf_token() }}">
+<table>
+<tr><th>Category</th><th>How the rate is found</th><th>Purity %</th><th>Margin ₹</th><th>On the TV</th></tr>
+{% for c in st.categories %}<tr>
+<td>{{ c.en }}</td>
+<td>{% if c.derive_from %}<select name="calc_{{ c.key }}"><option value="purity" {{ 'selected' if c.calc == 'purity' }}>24K rate × purity</option><option value="direct" {{ 'selected' if c.calc == 'direct' }}>Source rate directly</option></select>{% else %}Source rate{% endif %}</td>
+<td>{% if c.derive_from %}<input name="purity_{{ c.key }}" inputmode="decimal" value="{{ '%g'|format(c.purity) }}">{% else %}–{% endif %}</td>
+<td><input name="margin_{{ c.key }}" inputmode="decimal" value="{{ '%g'|format(c.margin) }}"></td>
+<td>{{ '{:,.0f}'.format(c.display) if c.display is not none else '—' }}</td></tr>{% endfor %}
+</table>
+<label>Round TV rates to the nearest ₹ <select name="round_to">{% for n in st.round_choices %}<option value="{{ n }}" {{ 'selected' if st.settings.round_to|int == n }}>{{ n }}</option>{% endfor %}</select></label>
+<button>Save pricing</button>
+</form></section>
+
+<section><h2>Source rates{% if mode != 'manual' %} (read only){% endif %}</h2>
+<form method="post" action="{{ url_for('admin.rates') }}">
+<input type="hidden" name="csrf" value="{{ csrf_token() }}">
+{% for c in st.categories %}
+{% if c.derive_from and c.calc == 'purity' %}
+<p class="hint">{{ c.en }}: calculated automatically from 24K × {{ '%g'|format(c.purity) }}% (on the TV: {{ '{:,.0f}'.format(c.display) if c.display is not none else '—' }})</p>
+{% else %}
+<label>{{ c.en }} – ₹ {{ c.unit_en }} (before margin)
+<input name="{{ c.key }}" inputmode="decimal" {{ 'disabled' if mode != 'manual' }} value="{{ '%.0f'|format(c.value) if c.value is not none else '' }}"></label>
+{% endif %}
+{% endfor %}
+{% if mode == 'manual' %}<button>Save rates and update the TV</button>{% else %}<p class="hint">Switch to Manual mode to type rates.</p>{% endif %}
+</form></section>
+
+<section><h2>Recent events</h2>
+<table>{% for l in logs %}<tr><td>{{ l.time }}</td><td>{{ l.level }}</td><td>{{ l.message }}</td></tr>{% else %}<tr><td>No events yet.</td></tr>{% endfor %}</table></section>
+{% endblock %}

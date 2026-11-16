@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gayatri Jewellers – Rates</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/display.css') }}">
+</head>
+<body>
+<main class="board">
+  <header class="top">
+    <div class="brand"><h1>GAYATRI JEWELLERS</h1><p>गायत्री ज्वेलर्स</p></div>
+    <div class="notice" id="notice"></div>
+    <div class="when"><div id="clock">--:--:--</div><div id="date"></div></div>
+  </header>
+  <section class="cards" id="cards"></section>
+  <footer class="bottom">
+    <div class="status" id="status"><i></i><span id="statusText">Connecting…</span></div>
+    <div class="ticker"><div class="track" id="ticker"></div></div>
+  </footer>
+</main>
+<script src="{{ url_for('static', filename='js/display.js') }}"></script>
+</body>
+</html>
