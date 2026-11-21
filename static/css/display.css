@@ -98,16 +98,25 @@ background:radial-gradient(ellipse at 49% 18%,#fff6eb 0%,#efdbc6 43%,#d4b593 85%
 @media(prefers-reduced-motion:reduce){.track{animation-duration:120s}.card>div:nth-child(2)::before{animation:none}.card{transition:none}}
 /* For phone portrait viewing show a usable vertical rate list while TV remains 16:9. */
 @media(max-width:720px) and (orientation:portrait){
-html,body{height:auto;overflow:auto}body{display:block;background:#ead4bb}
-.board{width:100%;height:auto;min-height:100dvh;aspect-ratio:auto;container-type:inline-size;overflow:hidden;padding:20px 14px 35px}
-.wood,.arch,.ray,.floor{display:none}.decor{opacity:.16!important;max-height:180px}
-.top{position:relative;height:auto;min-height:210px}.shop-logo{height:70px;width:92px;top:0;left:calc(50% - 46px)}
-.brand{top:78px}.brand h1{font-size:7cqw;letter-spacing:.3cqw}.brand h1::before,.brand h1::after{width:5cqw;margin-bottom:2cqw}.brand p{font-size:2.6cqw;letter-spacing:.5cqw;margin-top:5px}
-.when{top:150px}.date-pill{height:31px;min-width:240px;border-width:1px}.date-pill svg{width:17px;height:17px}#date{font-size:15px}.clock{font-size:12px}
-.heading{position:relative;top:auto;font-size:11cqw;margin-top:0}.subheading{position:relative;top:auto;margin-top:-8px;font-size:10cqw}.subheading::before,.subheading::after{width:17cqw}
-.cards{position:relative;left:auto;top:auto;width:100%;height:auto;margin:5px auto 0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px;justify-items:center}
-.card{width:100%;height:65cqw;max-height:320px;background-size:100% 100%}
-.card .name::after{font-size:7cqw}#c-silver .name::after{font-size:5cqw}
-.value{font-size:6.8cqw}.unit{font-size:3cqw;margin-top:1cqw}.delta{font-size:2.2cqw}
-.bottom{position:relative;top:auto;left:auto;height:auto;width:92%;margin:14px auto 0}.footer-divider{height:30px}.footer-divider svg{width:35px;height:25px}.footer-text{font-size:2.9cqw;letter-spacing:.6cqw}.footer-metadata{font-size:2.5cqw;margin-top:6px;gap:4px}.status{gap:6px}.status i{height:7px;width:7px}.ticker{max-height:25px}.track{font-size:2.5cqw}
+html,body{height:auto;overflow:auto}body{display:block;background:#ead4bb;padding-bottom:30px}
+.board{width:100%;height:auto;min-height:100dvh;aspect-ratio:auto;container-type:inline-size;overflow:visible;padding:18px 14px 28px;background:#fcf5ed}
+.wood,.arch,.ray,.floor{display:none}.decor{opacity:.12!important;max-height:150px}
+.top{position:relative;height:auto;min-height:150px;margin-bottom:8px}.shop-logo{height:58px;width:76px;top:0;left:calc(50% - 38px)}
+.brand{top:62px}.brand h1{font-size:clamp(1.5rem,7.5cqw,2rem);letter-spacing:.15cqw}.brand h1::before,.brand h1::after{width:4cqw}.brand p{font-size:clamp(0.75rem,2.8cqw,0.95rem);letter-spacing:.3cqw;margin-top:3px}
+.when{top:124px}.date-pill{height:30px;min-width:240px;border-width:1px;background:#fff9f2}#date{font-size:0.9rem}.clock{font-size:0.75rem}
+.heading{position:relative;top:auto;font-size:clamp(1.8rem,10cqw,3rem);margin-top:6px}.subheading{position:relative;top:auto;margin-top:-4px;font-size:clamp(1.3rem,8cqw,2.2rem);gap:2cqw}.subheading::before,.subheading::after{width:12cqw}
+.cards{position:relative;left:auto;top:auto;width:100%;height:auto;margin:12px auto 0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px}
+#c-silver{grid-column:span 2}
+.card{width:100%;height:auto;aspect-ratio:1/1.12;max-height:260px}
+.card .name::after{font-size:clamp(0.9rem,5.5cqw,1.3rem);top:39%}#c-silver .name::after{font-size:clamp(0.8rem,4.5cqw,1.1rem)}
+.card>div:nth-child(2){top:58%;height:37%}
+.value{font-size:clamp(1.1rem,6.2cqw,1.6rem)}
+.unit{font-size:clamp(0.65rem,2.8cqw,0.85rem);margin-top:2px}
+.delta{font-size:clamp(0.6rem,2.2cqw,0.75rem);top:91%}
+.bottom{position:relative;top:auto;left:auto;height:auto;width:100%;margin-top:20px}
+.footer-divider{height:22px}.footer-divider svg{width:28px;height:20px}
+.footer-text{font-size:0.8rem;letter-spacing:.25cqw;margin-top:4px}
+.footer-metadata{font-size:0.7rem;margin-top:6px;gap:3px}
+.status{gap:5px}.status i{height:6px;width:6px}
+.ticker{max-height:20px}.track{font-size:0.72rem}
 }
