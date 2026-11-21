@@ -5,7 +5,7 @@ from datetime import timedelta
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
-from flask import Flask
+from flask import Flask, request
 
 from config import Config
 from database import db
@@ -19,6 +19,47 @@ from services.providers.live_config import LiveConfig
 from services.providers.live_provider import LiveProvider
 from services.providers.manual_provider import ManualProvider
 from services.rate_service import RateService
+
+
+def _add_security_headers(response):
+    """Apply security headers to all responses."""
+    # Prevent clickjacking
+    response.headers["X-Frame-Options"] = "DENY"
+    # Prevent MIME type sniffing
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    # Enable XSS protection (legacy but harmless)
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    # Restrict referrer information
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    # Content Security Policy - restrictive but allows inline styles/scripts for display page
+    if request.path.startswith("/admin"):
+        response.headers["Content-Security-Policy"] = (
+            "default-src 'self'; "
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+            "font-src 'self' https://fonts.gstatic.com; "
+            "script-src 'self' 'unsafe-inline'; "
+            "img-src 'self' data:; "
+            "connect-src 'self'"
+        )
+    else:
+        # Display page needs inline script/style for live updates
+        response.headers["Content-Security-Policy"] = (
+            "default-src 'self'; "
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+            "font-src 'self' https://fonts.gstatic.com; "
+            "script-src 'self' 'unsafe-inline'; "
+            "img-src 'self' data:; "
+            "connect-src 'self'"
+        )
+    # Permissions Policy - restrict browser features
+    response.headers["Permissions-Policy"] = (
+        "accelerometer=(), camera=(), geolocation=(), gyroscope=(), "
+        "magnetometer=(), microphone=(), payment=(), usb=()"
+    )
+    # HSTS - only enable in production with HTTPS
+    # if not app.debug and request.is_secure:
+    #     response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+    return response
 
 BASE = Path(__file__).resolve().parent
 
@@ -52,6 +93,7 @@ def create_app(db_path=None, start_poller=True):
     app.jinja_env.globals["csrf_token"] = auth_service.csrf_token
     for module in (display, api, admin):
         app.register_blueprint(module.bp)
+    app.after_request(_add_security_headers)
     if start_poller:
         Poller(app.rate_service).start()
     return app
